@@ -60,7 +60,6 @@ resource "aws_route_table_association" "public_c" {
 # - Private Subnet の外向き通信は NAT Gateway 経由で行われるため必須
 # ---------------------------------------------------------
 resource "aws_eip" "nat_eip" {
-  vpc = true
 
   tags = {
     Name = "nat-eip"
