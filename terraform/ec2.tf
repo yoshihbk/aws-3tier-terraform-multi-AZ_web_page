@@ -15,7 +15,7 @@ resource "aws_launch_template" "web_lt" {
     name = aws_iam_instance_profile.ec2_ssm_profile.name
   }
 
-  user_data = base64encode(<<EOF
+user_data = base64encode(<<EOF
 #!/bin/bash
 set -eux
 
@@ -31,12 +31,13 @@ systemctl start nginx
 dnf install -y stress-ng
 
 # --- CPU を常時稼働させる（2コア）---
-# --- 稼働させないとき（動作チェック以外）は
-# --- コメントアウトしておくことを推奨 ---
-      stress-ng --cpu 2 --timeout 0 &
+stress-ng --cpu 2 --timeout 0 &
+
+# --- Instance ID を取得 ---
+INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 
 # --- Web ページ配置 ---
-cat <<'HTML' > /usr/share/nginx/html/index.html
+cat <<HTML > /usr/share/nginx/html/index.html
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -54,10 +55,10 @@ cat <<'HTML' > /usr/share/nginx/html/index.html
     <h1>Welcome to My Server</h1>
     <p>このページは ALB → EC2 → nginx で配信されています。</p>
     <p>このページを ご覧いただきありがとうございます。</p>
+    <h1>Instance ID: ${INSTANCE_ID}</h1>
   </div>
 </body>
 </html>
 HTML
 EOF
-  )
-}
+)
