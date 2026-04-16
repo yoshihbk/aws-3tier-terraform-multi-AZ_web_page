@@ -35,3 +35,17 @@ variable "default_tags" {
     Owner   = "Yoshihiro"
   }
 }
+# ---------------------------------------------------------
+# RDS 認証情報（Terraform 変数）
+# - RDSインスタンスの username / password を外部から受け取る
+# - GitHubに平文を残さないため、terraform.tfvars で値を設定する
+# - password は sensitive = true でマスクされる
+# ---------------------------------------------------------
+variable "db_username" {
+  type = string
+}
+
+variable "db_password" {
+  type      = string
+  sensitive = true
+}
