@@ -15,7 +15,7 @@ resource "aws_launch_template" "web_lt" {
     name = aws_iam_instance_profile.ec2_ssm_profile.name
   }
 
-user_data = base64encode(<<EOF
+  user_data = base64encode(<<EOF
 #!/bin/bash
 set -eux
 
@@ -55,10 +55,11 @@ cat <<HTML > /usr/share/nginx/html/index.html
     <h1>Welcome to My Server</h1>
     <p>このページは ALB → EC2 → nginx で配信されています。</p>
     <p>このページを ご覧いただきありがとうございます。</p>
-    <h1>Instance ID: ${INSTANCE_ID}</h1>
+    <h1>Instance ID: $${INSTANCE_ID}</h1>
   </div>
 </body>
 </html>
 HTML
 EOF
-)
+  )
+}
